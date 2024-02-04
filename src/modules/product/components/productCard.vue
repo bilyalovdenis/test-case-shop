@@ -26,10 +26,24 @@
 
                 <div class="product-card__body__payment__divider"></div>
 
-                <div class="product-card__body__payment__bonuses"></div>
+                <div class="product-card__body__payment__bonuses text-c100">
+                    <div class="product-card__body__payment__bonus">
+                        <img src="@/assets/delivery.svg" />
+                        <span>Free shipping</span>
+                    </div>
+                    <div class="product-card__body__payment__bonus">
+                        <img src="@/assets/gift.svg" />
+                        <span>Free gift</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="product-card__body__action"></div>
+            <div class="product-card__body__action">
+                <the-button class="view-deal-btn">
+                    <span class="view-deal-btn__text"> View deal </span>
+                    <img src="@/assets/vector.svg" />
+                </the-button>
+            </div>
         </div>
     </article>
 </template>
@@ -38,6 +52,7 @@
 import { currencyToMark } from "@/modules/meta/services";
 import { useMeta } from "@/modules/meta/store/useMeta";
 import { storeToRefs } from "pinia";
+import theButton from "@/components/ui/button";
 const { currency } = storeToRefs(useMeta());
 </script>
 
@@ -52,7 +67,7 @@ const { currency } = storeToRefs(useMeta());
     border: var(--border-primary);
 
     display: grid;
-    grid-template-rows: 132px 224px;
+    grid-template-rows: 132px 250px;
     position: relative;
     top: 0;
     box-shadow: 0 2px 10px 0 #00000025;
@@ -98,5 +113,23 @@ const { currency } = storeToRefs(useMeta());
     width: 100%;
     height: 1px;
     background-color: #cccccc;
+}
+.product-card__body__payment__bonuses {
+    color: #9c9c9c;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.product-card__body__payment__bonus {
+    display: flex;
+    align-items: center;
+}
+.product-card__body__payment__bonus img {
+    margin-right: 4px;
+}
+
+.view-deal-btn__text {
+    margin-right: 6px;
 }
 </style>
