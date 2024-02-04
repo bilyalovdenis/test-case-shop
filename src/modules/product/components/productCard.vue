@@ -1,17 +1,13 @@
 <template>
-    <article class="product-card">
-        <img
-            class="product-card__image"
-            src="https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666206241_12-mykaleidoscope-ru-p-kartinka-na-zastavku-oboi-12.jpg"
-        />
+    <component :is="tag" class="product-card">
+        <img class="product-card__image" :src="image" alt="" />
         <div class="product-card__body">
             <div class="product-card__body__text">
-                <h4 class="product-card__body__text__title text-h100">Apple</h4>
+                <h4 class="product-card__body__text__title text-h100">
+                    {{ title }}
+                </h4>
                 <p class="product-card__body__text__description text-p300">
-                    2020 Apple MacBook Air Laptop: Apple M1 Chip, 13” Retina
-                    Display, 8GB RAM, 256GB SSD Storage, Backlit
-                    KeyboardfsfFaceTime HD Camera, Touch ID. Works with
-                    iPhone/iPad; Silver
+                    {{ description }}
                 </p>
             </div>
             <div class="product-card__body__payment">
@@ -20,7 +16,7 @@
                         {{ currencyToMark[currency] }}
                     </span>
                     <span class="product-card__body__payment__price__value">
-                        1999
+                        {{ price }}
                     </span>
                 </div>
 
@@ -45,20 +41,59 @@
                 </the-button>
             </div>
         </div>
-    </article>
+    </component>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import { currencyToMark } from "@/modules/meta/services";
 import { useMeta } from "@/modules/meta/store/useMeta";
-import { storeToRefs } from "pinia";
+import { mapState } from "pinia";
 import theButton from "@/components/ui/button";
-const { currency } = storeToRefs(useMeta());
+import { PropType, defineComponent } from "vue";
+export default defineComponent({
+    components: {
+        theButton,
+    },
+    props: {
+        id: {
+            type: Number,
+            required: true,
+        },
+        title: {
+            type: String,
+            required: true,
+        },
+        price: {
+            type: Number,
+            required: true,
+        },
+        description: {
+            type: String,
+            required: true,
+        },
+        image: {
+            type: String,
+            required: true,
+        },
+        tag: {
+            type: String as PropType<"li" | "article">,
+            default: "article",
+        },
+    },
+    data: function () {
+        return {
+            //AN один из минусов Option Api - все внешние функции и enum нужно явно указывать в data, для того, чтобы использовать в шаблоне :(
+            currencyToMark: currencyToMark,
+        };
+    },
+    computed: {
+        ...mapState(useMeta, ["currency"]),
+    },
+});
 </script>
 
 <style scoped>
 .product-card {
-    width: 334px;
     padding: 20px 24px;
     padding-top: 36px;
 
@@ -80,7 +115,7 @@ const { currency } = storeToRefs(useMeta());
 
 .product-card__image {
     height: 132px;
-    width: 100%;
+    margin: 0 auto;
 }
 .product-card__body {
     display: flex;
@@ -109,6 +144,9 @@ const { currency } = storeToRefs(useMeta());
     flex-direction: column;
     gap: 12px;
 }
+.product-card__body__payment__price__currency {
+    margin-right: 5px;
+}
 .product-card__body__payment__divider {
     width: 100%;
     height: 1px;
@@ -128,7 +166,9 @@ const { currency } = storeToRefs(useMeta());
 .product-card__body__payment__bonus img {
     margin-right: 4px;
 }
-
+.product-card__body__action {
+    margin-top: 10px;
+}
 .view-deal-btn__text {
     margin-right: 6px;
 }

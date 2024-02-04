@@ -8,7 +8,7 @@ import { onMounted, ref } from "vue";
 import theHeader from "./components/the-header.vue";
 import theMain from "./components/the-main.vue";
 import { SCROLL_VALUE_FOR_HEADER_DECRAESE } from "./config";
-import { customThrottle } from "@/services/debounce";
+import { customThrottle } from "@/utils/debounce";
 
 ////SCROLL HANDLE////
 onMounted(() => {
@@ -63,3 +63,4 @@ body.is-scrolled {
     grid-template-rows: var(--scrolled-header-height) 1fr;
 }
 </style>
+@/utils/debounce

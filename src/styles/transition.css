@@ -1,0 +1,9 @@
+.expand-fade-enter-active,
+.expand-fade-leave-active {
+    transition: all 0.5s ease;
+}
+.expand-fade-enter-from,
+.expand-fade-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
+}
