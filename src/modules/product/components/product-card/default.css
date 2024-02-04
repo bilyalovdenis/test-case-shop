@@ -1,0 +1,10 @@
+.product-card.default {
+    grid-template-rows: 132px 350px;
+}
+.default .product-card__body {
+    margin-top: 12px;
+    overflow: auto;
+}
+.default .product-card__body__text {
+    margin-bottom: 12px;
+}

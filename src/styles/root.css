@@ -42,3 +42,7 @@
 .text-error {
     color: var(--theme-error);
 }
+
+body.show-dialog {
+    overflow: hidden;
+}

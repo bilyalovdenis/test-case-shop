@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import useAsyncState from "@/utils/composables/useAsyncState";
-import productCard from "./productCard.vue";
+import productCard from "./product-card";
 import fetchingMarker from "@/components/ui/fetching-marker";
 import { Product, ProductModel } from "../model";
 import { computed, ref } from "vue";

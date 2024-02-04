@@ -1,0 +1,23 @@
+.product-card.short {
+    border: var(--border-primary);
+    position: relative;
+    top: 0;
+    box-shadow: 0 2px 10px 0 #00000025;
+    transition: all 0.3s ease;
+}
+.product-card.short:hover {
+    top: -5px;
+    box-shadow: 0 4px 10px 0 #00000049;
+}
+.short .product-card__body__text__title {
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.short .product-card__body__text__description {
+    -webkit-line-clamp: 3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
