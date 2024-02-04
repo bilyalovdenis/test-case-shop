@@ -5,6 +5,7 @@
     --theme-secondary: #1bbf70;
     --theme-secondary-darken: #12804b;
     --theme-background: #fafafa;
+    --theme-error: #d50000;
 
     /* borders */
     --border-primary: solid 1px var(--theme-primary-darken);
@@ -37,4 +38,7 @@
 
 .bg-background {
     background-color: var(--theme-background);
+}
+.text-error {
+    color: var(--theme-error);
 }

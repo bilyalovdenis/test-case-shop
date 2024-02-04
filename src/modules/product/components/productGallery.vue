@@ -1,28 +1,35 @@
 <template>
     <section class="product-gallery">
+        <span v-if="isError" class="text-error">{{ error }}</span>
         <div v-if="isInitialLoading">initial render</div>
-        <TransitionGroup
-            v-else
-            name="expand-fade"
-            class="product-gallery__container"
-            tag="ul"
-            @after-enter="showNext"
-            @after-leave="hidePrev"
-        >
-            <product-card
-                v-for="product in productsToShow"
-                tag="li"
-                v-bind="product"
-                :key="product.id"
+        <template v-else>
+            <TransitionGroup
+                name="expand-fade"
+                class="product-gallery__container"
+                tag="ul"
+                @after-enter="showNext"
+                @after-leave="hidePrev"
+            >
+                <product-card
+                    v-for="product in productsToShow"
+                    tag="li"
+                    v-bind="product"
+                    :key="product.id"
+                />
+            </TransitionGroup>
+            <fetchingMarker
+                v-if="showFetchingMarker"
+                style="margin-top: 20px"
+                @on-visible="fetchMore"
             />
-        </TransitionGroup>
-        <button v-if="showFetchingMarker" @click="showMore">еще</button>
+        </template>
     </section>
 </template>
 
 <script setup lang="ts">
 import useAsyncState from "@/utils/composables/useAsyncState";
 import productCard from "./productCard.vue";
+import fetchingMarker from "@/components/ui/fetching-marker";
 import { Product, ProductModel } from "../model";
 import { computed, ref } from "vue";
 
@@ -31,32 +38,30 @@ const offset = ref(0);
 const PAGE_SIZE = 5;
 const {
     data: products,
-    isLoading,
     error,
     isError,
     executeRequest,
 } = useAsyncState(ProductModel.getProducts, {
     immediate: true,
     initialArgs: [offset.value + PAGE_SIZE],
-    onSuccess: (value) => {
+    onSuccess: () => {
         offset.value += PAGE_SIZE;
         animationStart();
-        console.log(value);
     },
 });
-const isInitialLoading = computed(() => products === undefined);
-const showMore = () => {
+const fetchMore = () => {
     executeRequest(offset.value + PAGE_SIZE);
 };
+
 //ANIMATIONS//
 const numShow = ref(0);
-
 const animationStart = () => {
     numShow.value += 1;
 };
 const productsToShow = computed<Product[]>(() => {
     return products.value?.slice(0, numShow.value) ?? [];
 });
+
 const showNext = (el: any) => {
     numShow.value = Math.min((products.value ?? []).length, numShow.value + 1);
 };
@@ -65,8 +70,12 @@ const hidePrev = () => {
 };
 
 //STATE MANAGMENT//
+const isInitialLoading = computed(() => products === undefined);
+
 const showFetchingMarker = computed<boolean>(() => {
-    return productsToShow.value.length >= (products.value?.length ?? -1);
+    //не показываем маркер, пока не прошла инициализация первыми данными
+    if (products.value === undefined) return false;
+    return productsToShow.value.length >= products.value.length;
 });
 </script>
 
