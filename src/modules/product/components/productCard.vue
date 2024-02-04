@@ -1,0 +1,102 @@
+<template>
+    <article class="product-card">
+        <img
+            class="product-card__image"
+            src="https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666206241_12-mykaleidoscope-ru-p-kartinka-na-zastavku-oboi-12.jpg"
+        />
+        <div class="product-card__body">
+            <div class="product-card__body__text">
+                <h4 class="product-card__body__text__title text-h100">Apple</h4>
+                <p class="product-card__body__text__description text-p300">
+                    2020 Apple MacBook Air Laptop: Apple M1 Chip, 13” Retina
+                    Display, 8GB RAM, 256GB SSD Storage, Backlit
+                    KeyboardfsfFaceTime HD Camera, Touch ID. Works with
+                    iPhone/iPad; Silver
+                </p>
+            </div>
+            <div class="product-card__body__payment">
+                <div class="product-card__body__payment__price text-l100-b">
+                    <span class="product-card__body__payment__price__currency">
+                        {{ currencyToMark[currency] }}
+                    </span>
+                    <span class="product-card__body__payment__price__value">
+                        1999
+                    </span>
+                </div>
+
+                <div class="product-card__body__payment__divider"></div>
+
+                <div class="product-card__body__payment__bonuses"></div>
+            </div>
+
+            <div class="product-card__body__action"></div>
+        </div>
+    </article>
+</template>
+
+<script setup lang="ts">
+import { currencyToMark } from "@/modules/meta/services";
+import { useMeta } from "@/modules/meta/store/useMeta";
+import { storeToRefs } from "pinia";
+const { currency } = storeToRefs(useMeta());
+</script>
+
+<style scoped>
+.product-card {
+    width: 334px;
+    padding: 20px 24px;
+    padding-top: 36px;
+
+    background-color: var(--theme-primary);
+    border-radius: 24px;
+    border: var(--border-primary);
+
+    display: grid;
+    grid-template-rows: 132px 224px;
+    position: relative;
+    top: 0;
+    box-shadow: 0 2px 10px 0 #00000025;
+    transition: all 0.3s ease;
+}
+.product-card:hover {
+    top: -5px;
+    box-shadow: 0 4px 10px 0 #00000049;
+}
+
+.product-card__image {
+    height: 132px;
+    width: 100%;
+}
+.product-card__body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.product-card__body__text__title {
+    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    margin: 0;
+    margin-bottom: 12px;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.product-card__body__text__description {
+    color: #828282;
+    margin: 0;
+    -webkit-line-clamp: 3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.product-card__body__payment {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.product-card__body__payment__divider {
+    width: 100%;
+    height: 1px;
+    background-color: #cccccc;
+}
+</style>
