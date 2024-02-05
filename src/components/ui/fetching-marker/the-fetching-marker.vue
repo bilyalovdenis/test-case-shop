@@ -11,13 +11,11 @@ export default defineComponent({
     data() {
         return {
             //observe
-            initializationCallGuard: true,
             observer: null as IntersectionObserver | null,
             observerOptions: {
                 rootMargin: "0px",
                 threshold: 0.5,
             },
-
             //state
             onceCalledGuard: false,
         };
@@ -26,10 +24,8 @@ export default defineComponent({
         const el = this.$el as HTMLElement;
         const parent = el.parentElement;
         if (!el || !parent) return;
-        this.observer = new IntersectionObserver(() => {
-            //если вызов при инициализации
-            if (this.initializationCallGuard) {
-                this.initializationCallGuard = false;
+        this.observer = new IntersectionObserver((entry) => {
+            if (entry[0].intersectionRatio === 0) {
                 return;
             }
             //если уже выдавали emit
