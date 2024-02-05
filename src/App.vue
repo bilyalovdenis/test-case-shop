@@ -55,7 +55,7 @@ body {
     grid-template-areas:
         "header"
         "main";
-    grid-template-rows: var(--header-height) 1fr;
+    grid-template-rows: var(--header-height) calc(100vh - var(--header-height));
     overflow: scroll;
     transition: grid-template-rows 0.5s ease;
 }

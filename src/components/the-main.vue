@@ -13,4 +13,9 @@ import productGallery from "@/modules/product/components/the-product-gallery.vue
     grid-area: main;
     padding: 50px;
 }
+@media screen and (max-width: 500px) {
+    .main {
+        padding: 20px;
+    }
+}
 </style>
