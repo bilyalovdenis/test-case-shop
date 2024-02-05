@@ -114,8 +114,8 @@ export default defineComponent({
     padding-top: 36px;
     background-color: var(--theme-primary);
     border-radius: 24px;
-    display: grid;
-    grid-template-rows: 132px 250px;
+    display: flex;
+    flex-direction: column;
     position: relative;
 }
 .product-card__image {
@@ -124,6 +124,7 @@ export default defineComponent({
 }
 .product-card__body {
     display: flex;
+    height: 250px;
     flex-direction: column;
     justify-content: space-between;
 }
@@ -131,10 +132,12 @@ export default defineComponent({
     text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     margin: 0;
     margin-bottom: 12px;
+    overflow: hidden;
 }
 .product-card__body__text__description {
     color: #828282;
     margin: 0;
+    overflow: hidden;
 }
 .product-card__body__payment {
     display: flex;

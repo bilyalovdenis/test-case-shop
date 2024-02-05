@@ -1,7 +1,5 @@
-.product-card.default {
-    grid-template-rows: 132px 350px;
-}
 .default .product-card__body {
+    height: 350px;
     margin-top: 12px;
     overflow: auto;
 }
