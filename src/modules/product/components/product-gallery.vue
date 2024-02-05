@@ -1,14 +1,14 @@
 <template>
-    <section class="product-gallery">
+    <section class="product-gallery" :class="{ 'is-init': isInitialLoading }">
         <span v-if="isError" class="text-error">{{ error }}</span>
-        <div v-if="isInitialLoading">initial render</div>
+        <progress-spinner v-if="isInitialLoading" />
         <template v-else>
             <TransitionGroup
                 name="expand-fade"
                 class="product-gallery__container"
                 tag="ul"
+                appear
                 @after-enter="showNext"
-                @after-leave="hidePrev"
             >
                 <product-card
                     v-for="product in productsToShow"
@@ -32,7 +32,7 @@ import productCard from "./product-card";
 import fetchingMarker from "@/components/ui/fetching-marker";
 import { Product, ProductModel } from "../model";
 import { computed, ref } from "vue";
-
+import progressSpinner from "@/components/ui/progress-spinner";
 //DATA AND FETCHING//
 const offset = ref(0);
 const PAGE_SIZE = 5;
@@ -65,12 +65,9 @@ const productsToShow = computed<Product[]>(() => {
 const showNext = (el: any) => {
     numShow.value = Math.min((products.value ?? []).length, numShow.value + 1);
 };
-const hidePrev = () => {
-    numShow.value = Math.max(0, numShow.value - 1);
-};
 
 //STATE MANAGMENT//
-const isInitialLoading = computed(() => products === undefined);
+const isInitialLoading = computed(() => products.value === undefined);
 
 const showFetchingMarker = computed<boolean>(() => {
     //не показываем маркер, пока не прошла инициализация первыми данными
@@ -80,6 +77,10 @@ const showFetchingMarker = computed<boolean>(() => {
 </script>
 
 <style scoped>
+.product-gallery.is-init {
+    display: flex;
+    justify-content: center;
+}
 .product-gallery__container {
     display: grid;
     grid-template-columns: repeat(4, minmax(300px, 400px));

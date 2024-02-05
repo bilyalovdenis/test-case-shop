@@ -63,4 +63,3 @@ body.is-scrolled {
     grid-template-rows: var(--scrolled-header-height) 1fr;
 }
 </style>
-@/utils/debounce
