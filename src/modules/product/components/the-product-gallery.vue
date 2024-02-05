@@ -17,7 +17,7 @@
                     :key="product.id"
                 />
             </TransitionGroup>
-            <fetchingMarker
+            <fetching-marker
                 v-if="showFetchingMarker"
                 style="margin-top: 20px"
                 @on-visible="fetchMore"

@@ -1,2 +1,2 @@
-import main from "./product-card.vue";
+import main from "./the-product-card.vue";
 export default main;
