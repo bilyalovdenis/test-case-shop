@@ -1,7 +1,12 @@
 <template>
-    <section class="product-gallery" :class="{ 'is-init': isInitialLoading }">
-        <span v-if="isError" class="text-error">{{ error }}</span>
-        <progress-spinner v-if="isInitialLoading" />
+    <section
+        class="product-gallery"
+        :class="{ 'is-empty': firstProductPageNotFetchYet }"
+    >
+        <span v-if="productsFetchIsError" class="text-error">
+            {{ productsFetchErrorMessage }}
+        </span>
+        <progress-spinner v-if="firstProductPageNotFetchYet" />
         <template v-else>
             <TransitionGroup
                 name="expand-fade"
@@ -18,9 +23,9 @@
                 />
             </TransitionGroup>
             <fetching-marker
-                v-if="showFetchingMarker"
+                v-if="fetchingMarkerIsShown"
                 style="margin-top: 20px"
-                @on-visible="fetchMore"
+                @on-visible="fetchNextPage"
             />
         </template>
     </section>
@@ -34,23 +39,26 @@ import { Product, ProductModel } from "../model";
 import { computed, ref } from "vue";
 import progressSpinner from "@/components/ui/progress-spinner";
 //DATA AND FETCHING//
-const offset = ref(0);
-const PAGE_SIZE = 5;
+//Переменные для хранения информации о текущей пагинации и размера пагинации
+const currentFetchingOffset = ref(0);
+const FETCHING_PAGE_SIZE = 10;
+
 const {
-    data: products,
-    error,
-    isError,
-    executeRequest,
+    data: productList, //список загруженных,  товаров; undefined, если первичный запрос еще не выполнен
+    error: productsFetchErrorMessage,
+    isError: productsFetchIsError,
+    executeRequest: repeatFetchProducts, // функция для повторного запроса
 } = useAsyncState(ProductModel.getProducts, {
     immediate: true,
-    initialArgs: [offset.value + PAGE_SIZE],
+    initialArgs: [currentFetchingOffset.value + FETCHING_PAGE_SIZE],
     onSuccess: () => {
-        offset.value += PAGE_SIZE;
+        currentFetchingOffset.value += FETCHING_PAGE_SIZE;
         animationStart();
     },
 });
-const fetchMore = () => {
-    executeRequest(offset.value + PAGE_SIZE);
+
+const fetchNextPage = () => {
+    repeatFetchProducts(currentFetchingOffset.value + FETCHING_PAGE_SIZE);
 };
 
 //ANIMATIONS//
@@ -59,25 +67,31 @@ const animationStart = () => {
     numShow.value += 1;
 };
 const productsToShow = computed<Product[]>(() => {
-    return products.value?.slice(0, numShow.value) ?? [];
+    return productList.value?.slice(0, numShow.value) ?? [];
 });
 
 const showNext = (el: any) => {
-    numShow.value = Math.min((products.value ?? []).length, numShow.value + 1);
+    numShow.value = Math.min(
+        (productList.value ?? []).length,
+        numShow.value + 1
+    );
 };
 
-//STATE MANAGMENT//
-const isInitialLoading = computed(() => products.value === undefined);
+//INTERNAL STATE MANAGMENT//
+const firstProductPageNotFetchYet = computed(
+    () => productList.value === undefined
+);
 
-const showFetchingMarker = computed<boolean>(() => {
+const fetchingMarkerIsShown = computed<boolean>(() => {
     //не показываем маркер, пока не прошла инициализация первыми данными
-    if (products.value === undefined) return false;
-    return productsToShow.value.length >= products.value.length;
+    if (productList.value === undefined) return false;
+    // показываем только если отображены все загруженные продукты
+    return productsToShow.value.length >= productList.value.length;
 });
 </script>
 
 <style scoped>
-.product-gallery.is-init {
+.product-gallery.is-empty {
     display: flex;
     justify-content: center;
 }
