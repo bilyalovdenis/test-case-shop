@@ -1,3 +1,4 @@
+<!-- Компонент для поочередного анимированого рендеринга списка элементов -->
 <template>
     <TransitionGroup name="expand-fade" tag="ul" appear @after-enter="showNext">
         <template v-for="item in itemsToShow" :key="item[uniqueKey]">
@@ -22,8 +23,8 @@ type Props = {
     uniqueKey: string;
 };
 type Emits = {
-    onStart: [];
-    onStop: [];
+    onStart: []; //start animation
+    onStop: []; //stop animation
 };
 
 const props = defineProps<Props>();
