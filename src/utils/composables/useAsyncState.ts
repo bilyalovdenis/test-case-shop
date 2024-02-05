@@ -40,6 +40,7 @@ export default function useAsyncState<DataType, Params extends any[] = []>(
             .then((value) => {
                 if (
                     typeof value === "object" &&
+                    data.value == value && //FIX
                     !Array.isArray(value) &&
                     value !== null
                 ) {
