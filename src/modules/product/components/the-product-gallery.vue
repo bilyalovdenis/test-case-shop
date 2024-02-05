@@ -44,7 +44,7 @@ const currentFetchingOffset = ref(0);
 const FETCHING_PAGE_SIZE = 10;
 
 const {
-    data: productList, //список загруженных,  товаров; undefined, если первичный запрос еще не выполнен
+    data: productsFetchResult, //список загруженных товаров; undefined, если первичный запрос еще не выполнен
     error: productsFetchErrorMessage,
     isError: productsFetchIsError,
     executeRequest: repeatFetchProducts, // функция для повторного запроса
@@ -78,13 +78,21 @@ const showNext = (el: any) => {
 };
 
 //INTERNAL STATE MANAGMENT//
+const hasNextPage = computed<boolean>(() => {
+    return productsFetchResult?.value?.hasNextPage ?? false;
+});
+
+const productList = computed<Product[] | undefined>(() => {
+    return productsFetchResult?.value?.productList;
+});
+
 const firstProductPageNotFetchYet = computed(
     () => productList.value === undefined
 );
 
 const fetchingMarkerIsShown = computed<boolean>(() => {
-    //не показываем маркер, пока не прошла инициализация первыми данными
-    if (productList.value === undefined) return false;
+    //не показываем маркер, пока не прошла инициализация первыми данными или продукты закончились
+    if (productList.value === undefined || !hasNextPage.value) return false;
     // показываем только если отображены все загруженные продукты
     return productsToShow.value.length >= productList.value.length;
 });
