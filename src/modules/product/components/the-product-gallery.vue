@@ -8,20 +8,17 @@
         </span>
         <progress-spinner v-if="firstProductPageNotFetchYet" />
         <template v-else>
-            <TransitionGroup
-                name="expand-fade"
+            <turning-animation-list
+                unique-key="id"
+                :items="productList"
                 class="product-gallery__container"
-                tag="ul"
-                appear
-                @after-enter="showNext"
+                @on-start="animationInProccessing = true"
+                @on-stop="animationInProccessing = false"
             >
-                <product-card
-                    v-for="product in productsToShow"
-                    tag="li"
-                    v-bind="product"
-                    :key="product.id"
-                />
-            </TransitionGroup>
+                <template #item="{ item }">
+                    <product-card tag="li" v-bind="item" />
+                </template>
+            </turning-animation-list>
             <fetching-marker
                 v-if="fetchingMarkerIsShown"
                 style="margin-top: 20px"
@@ -35,13 +32,14 @@
 import useAsyncState from "@/utils/composables/useAsyncState";
 import productCard from "./product-card";
 import fetchingMarker from "@/components/ui/fetching-marker";
+import turningAnimationList from "@/components/ui/turning-animation-list";
 import { Product, ProductModel } from "../model";
 import { computed, ref } from "vue";
 import progressSpinner from "@/components/ui/progress-spinner";
 //DATA AND FETCHING//
 //Переменные для хранения информации о текущей пагинации и размера пагинации
 const currentFetchingOffset = ref(0);
-const FETCHING_PAGE_SIZE = 10;
+const FETCHING_PAGE_SIZE = 5;
 
 const {
     data: productsFetchResult, //список загруженных товаров; undefined, если первичный запрос еще не выполнен
@@ -53,7 +51,6 @@ const {
     initialArgs: [currentFetchingOffset.value + FETCHING_PAGE_SIZE],
     onSuccess: () => {
         currentFetchingOffset.value += FETCHING_PAGE_SIZE;
-        animationStart();
     },
 });
 
@@ -61,24 +58,9 @@ const fetchNextPage = () => {
     repeatFetchProducts(currentFetchingOffset.value + FETCHING_PAGE_SIZE);
 };
 
-//ANIMATIONS//
-const numShow = ref(0);
-const animationStart = () => {
-    numShow.value += 1;
-};
-const productsToShow = computed<Product[]>(() => {
-    return productList.value?.slice(0, numShow.value) ?? [];
-});
-
-const showNext = (el: any) => {
-    numShow.value = Math.min(
-        (productList.value ?? []).length,
-        numShow.value + 1
-    );
-};
-
 //INTERNAL STATE MANAGMENT//
-const hasNextPage = computed<boolean>(() => {
+const animationInProccessing = ref(false);
+const fetchingHasNextPage = computed<boolean>(() => {
     return productsFetchResult?.value?.hasNextPage ?? false;
 });
 
@@ -92,9 +74,10 @@ const firstProductPageNotFetchYet = computed(
 
 const fetchingMarkerIsShown = computed<boolean>(() => {
     //не показываем маркер, пока не прошла инициализация первыми данными или продукты закончились
-    if (productList.value === undefined || !hasNextPage.value) return false;
+    if (productList.value === undefined || !fetchingHasNextPage.value)
+        return false;
     // показываем только если отображены все загруженные продукты
-    return productsToShow.value.length >= productList.value.length;
+    return !animationInProccessing.value;
 });
 </script>
 
@@ -103,24 +86,24 @@ const fetchingMarkerIsShown = computed<boolean>(() => {
     display: flex;
     justify-content: center;
 }
-.product-gallery__container {
+:deep(.product-gallery__container) {
     display: grid;
     grid-template-columns: repeat(4, minmax(300px, 400px));
     gap: 40px;
     justify-content: center;
 }
 @media screen and (max-width: 1450px) {
-    .product-gallery__container {
+    :deep(.product-gallery__container) {
         grid-template-columns: repeat(3, minmax(334px, 400px));
     }
 }
 @media screen and (max-width: 1200px) {
-    .product-gallery__container {
+    :deep(.product-gallery__container) {
         grid-template-columns: repeat(2, minmax(334px, 400px));
     }
 }
 @media screen and (max-width: 800px) {
-    .product-gallery__container {
+    :deep(.product-gallery__container) {
         grid-template-columns: minmax(334px, 400px);
     }
 }

@@ -9,7 +9,7 @@ export class ProductModel {
         limit?: number,
         offset?: number
     ): Promise<{ productList: Product[]; hasNextPage: boolean }> {
-        await setAsyncTimeout(2000); //api очень быстро отвечает и не получится нормальнос постореть loading, поэтому кастомная задержка
+        await setAsyncTimeout(1000); //api очень быстро отвечает и не получится нормальнос постореть loading, поэтому кастомная задержка
         const productList = (
             await axios.get<Product[]>("https://fakestoreapi.com/products", {
                 params: { offset: offset, limit: limit },
